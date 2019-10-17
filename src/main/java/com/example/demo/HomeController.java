@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.security.Principal;
 
@@ -16,7 +17,22 @@ public class HomeController {
     CourseRepository courseRepository;
 
     @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
     private UserService userService;
+
+    @PostConstruct
+    public void load() {
+        System.out.println(roleRepository.findAll());
+
+        if (!roleRepository.findAll().iterator().hasNext()){
+            roleRepository.save(new Role("USER"));
+            roleRepository.save(new Role("ADMIN"));
+        }
+        System.out.println(roleRepository.findAll());
+
+    }
 
     @GetMapping("/register")
     public String showRegistrationPage(Model model) {
@@ -40,6 +56,8 @@ public class HomeController {
         }
         return "index";
     }
+
+
 
     @Autowired
     UserRepository userRepository;
